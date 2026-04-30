@@ -1,0 +1,55 @@
+การติดตั้ง{
+npm install
+npm install prisma@6 @prisma/client@6 openai // เอไอ กับ พรีม่า
+npm install lucide-react            // ui
+npm install recharts date-fns       // ตาราง
+npm install heic-convert            // แปลงรูป
+npm install next-auth bcryptjs      //ล๊อคอิน
+npm install -D @types/bcryptjs
+
+npm install @vercel/blob
+
+npm install next-themes
+}
+
+
+
+ตั้งค่าโปรเจคตอนเริ่ม{
+npx prisma init
+
+npx prisma db push
+
+npx prisma generate
+
+npx tsx register-user.ts ล๊อคอิน user
+
+npm install react-hot-toast
+}
+
+ดูดาต้าเดท{
+npx prisma studio
+}
+
+การแก้ไขดาต้าเดท แบบเปลี่ยนข้อมูลหรือเพิ่ม{
+npx prisma migrate dev --name (ชื่อคอมมิด)
+}
+
+ล้างดาต้าเบท{
+npx prisma migrate reset
+}
+
+เริ่มให้โค้ดทำงาน{
+npm run dev
+npm run dev -- -H (ip คอม)
+}
+
+
+
+
+
+
+database info{
+postges
+pass: 1234
+}
+

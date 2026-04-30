@@ -1,0 +1,85 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+/__tests__/ignored-if-any-specific-local-data
+/test-results
+/test-images
+/scripts
+/test-images2
+test-results*.csv
+
+__tests__
+
+node_modules
+.next
+.claude
+.env
+.env.local
+npm-debug.log*
+.vscode
+
+public/uploads/*
+!public/uploads/.gitkeep
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
+.env
+.env*.local
+.env.development
+.env.test
+.env.production
+
+# vercel
+.vercel
+
+# AI / Assistant
+.claude/
+
+# typescript
+*.tsbuildinfo
+
+# prisma
+# migrations should be committed, but sqlite databases should be ignored if used
+# *.db
+# *.db-journal
+
+# uploads
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+/test-images
+/scripts
+test-results.csv
+test-results/*
+test-results-corrected-pattern.csv
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

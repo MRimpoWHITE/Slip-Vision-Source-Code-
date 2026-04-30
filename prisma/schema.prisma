@@ -1,0 +1,123 @@
+// prisma/schema.prisma
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER      // ผู้ใช้ทั่วไป (ยังไม่มีร้าน)
+  OWNER     // เจ้าของร้าน
+  STAFF     // พนักงาน
+  SUPERADMIN // แอดมินใหญ่ (ลูกพี่เอง)
+}
+
+model Slip {
+  id        Int      @id @default(autoincrement())
+  sender    String?  // ชื่อผู้โอน
+  receiver  String?  // ชื่อผู้รับ
+  bank      String?  // ธนาคาร
+  amount    Float?   // ยอดเงิน
+  date      String?  // วันที่ (เก็บเป็น string หรือ DateTime ก็ได้)
+  time      String?  // เวลา
+  imageUrl  String?  // path รูปภาพ
+  details   String?  // เอาไว้ใส่ "บันทึกช่วยจำ" (เช่น ค่าข้าว)
+
+  refNo     String?  // เอาไว้เก็บ "รหัสอ้างอิง" (Ref No.)
+  verified  Boolean  @default(false) // true = ผ่านการตรวจสอบด้วย Thunder API (QR)
+
+  createdAt DateTime @default(now())
+
+  shopId    Int?     // shopId เพื่อให้รู้ว่าสลิปนี้ของร้านไหน
+  shop      Shop?    @relation(fields: [shopId], references: [id])
+
+  uploadedById Int?
+  uploadedBy   User?   @relation("SlipUploader", fields: [uploadedById], references: [id])
+
+  updatedById  Int?
+  updatedBy    User?   @relation("SlipUpdater", fields: [updatedById], references: [id])
+
+  @@index([shopId, createdAt]) // query หลัก: ดึงสลิปของร้าน เรียงตามวันที่
+  @@index([refNo])             // ตรวจสลิปซ้ำ
+}
+
+model Shop {
+  id          Int      @id @default(autoincrement())
+  name        String
+  bank        String?  // ธนาคารหลักของร้าน
+  accountNo   String?  // เลขบัญชี
+  accountName String?  // ชื่อบัญชี
+  logo        String?  // โลโก้ร้าน
+  plan        String   @default("free") // free | premium
+  planExpiredAt DateTime?
+  inviteCode  String   @unique // รหัสสำหรับให้พนักงานกรอก (เช่น SV-9999)
+  
+  ownerId     Int      // ID ของเจ้าของร้าน (User.id)
+  
+  users       User[]   // ร้านนี้มีพนักงานใครบ้าง
+  slips       Slip[]   // สลิปทั้งหมดในร้านนี้ (เชื่อม Relation กับ Slip ด้วยจะดีมาก)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  auditLogs   AuditLog[]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String   // เก็บแบบ Hash นะครับ
+  name      String?   //ชื่อ
+  phone     String?  // เบอร์
+  gender    String?
+  birthDate DateTime? // เก็บวันเกิด
+  image     String?  // เก็บ URL รูปโปรไฟล์
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // (Optional) ถ้าอนาคตจะทำระบบร้านค้า ค่อยมาเพิ่ม Relation ตรงนี้
+
+  role      Role     @default(USER) 
+  shopId    Int?     // User นี้สังกัดร้านไหน (ถ้า null คือไม่มีร้าน)
+  shop      Shop?    @relation(fields: [shopId], references: [id])
+  
+  auditLogs AuditLog[]
+
+  uploadedSlips Slip[] @relation("SlipUploader")
+  updatedSlips  Slip[] @relation("SlipUpdater")
+}
+
+// schema.prisma
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  
+  // ✅ แก้ type เป็น Int (เพื่อให้ตรงกับ User.id)
+  actorId     Int
+  actor       User     @relation(fields: [actorId], references: [id])
+  
+  // ✅ แก้ type เป็น Int (เพื่อให้ตรงกับ Shop.id)
+  shopId      Int
+  shop        Shop     @relation(fields: [shopId], references: [id])
+
+  action      String   // "UPLOAD", "UPDATE", "DELETE"
+  
+  targetType  String   // "SLIP"
+  targetId    String   // เก็บเป็น String ดีแล้วครับ ยืดหยุ่นเผื่อ ID ตารางอื่นเป็น uuid
+  
+  details     Json? 
+
+  @@index([shopId])
+  @@index([createdAt])
+}

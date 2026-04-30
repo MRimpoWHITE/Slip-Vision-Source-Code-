@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* 1. กำหนด Theme Variables ตามมาตรฐาน v4 */
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+/* 2. บังคับให้ใช้คลาส .dark (ถ้าโปรเจคคุณใช้ next-themes) */
+@variant dark (&:where(.dark, .dark *));
+
+/* 3. กำหนดค่าสีพื้นฐาน */
+:root {
+  --background: #f9fafb; /* bg-gray-50 */
+  --foreground: #111827; /* gray-900 */
+}
+
+.dark {
+  --background: #020617; /* slate-950 */
+  --foreground: #f3f4f6; /* gray-100 */
+}
+
+/* 4. สไตล์พื้นฐานของ Body */
+@layer base {
+  *, ::after, ::before {
+    @apply border-gray-200 dark:border-slate-800;
+  }
+  
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    @apply font-sans antialiased;
+    height: 100%;
+    overscroll-behavior-y: none;
+  }
+}
+
+/* 5. ทริคแก้ไอคอนปฏิทินมองไม่เห็นในโหมดมืด (ที่คุณเคยใช้) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  @apply dark:invert;
+}
