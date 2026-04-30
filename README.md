@@ -6,7 +6,7 @@
 ขับเคลื่อนด้วย [**Typhoon AI**](https://opentyphoon.ai/) สำหรับการอ่านข้อมูล (OCR) และ Parser  
 พร้อมระบบแดชบอร์ดและสรุปยอดขายที่เข้าถึงได้จากทุกที่
 
-<img width="1910" height="909" alt="SlipVision Dashboard" src="https://github.com/user-attachments/assets/965de448-a289-403d-967a-9f6e58b25e4a" />
+<img width="1867" height="1039" alt="Screenshot 2026-05-01 023946" src="https://github.com/user-attachments/assets/6e77cf81-27e1-468d-841c-ff46f8877192" />
 
 </div>
 
